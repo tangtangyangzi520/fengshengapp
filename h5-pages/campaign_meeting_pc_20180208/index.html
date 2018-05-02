@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>2018年会</title>
+    <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+</head>
+
+<body>
+    <div class="page">
+        <div style="display:block;" id="introduce">
+            <div class="get-top">冲顶现金活动</div>
+            <div class="get-top pro-num">共&nbsp;5&nbsp;道题</div>
+            <div class="last-rule more-dis">每道题有10s答题时间，答对即进入下一道题</div>
+            <div class="last-rule">答错或弃权则无法再次参与获得现金大奖</div>
+        </div>
+        <div style="display:none;" id="answerBefore">
+            <div class="percent totalAmount"><span>1</span>/<span>10</span></div>
+            <div class="time">答题倒计时：<span></span> s</div>
+            <div class="problem"></div>
+            <div class="choose_list">
+                <!-- <div class="choose"><text class="name">A.程建冲</text></div>
+                <div class="choose"><text class="name">B.程建冲</text></div>
+                <div class="choose"><text class="name">C.程建冲</text></div> -->
+            </div>
+        </div>
+        <div style="display:none;" id="answerAfter">
+            <div class="percent totalAmountA"><span>1</span>/<span>10</span></div>
+            <div class="problem more"></div>
+            <div class="choose_list">
+                <!-- <div class="choose"><text class="name">A.程建冲</text><text class="num">1人</text></div>
+                <div class="choose"><text class="name">A.程建冲</text><text class="num">41人</text></div>
+                <div class="choose active"><text class="name ">A.程建冲</text><text class="num">44人</text></div> -->
+            </div>
+        </div>
+        <div style="display:none;" id="successList">
+            <div class="result">冲顶成功名单</div>
+            <div class="name-contain">
+                <div class="all-part">
+                    <div>
+                        <image class="person-draw" src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3950028239,2497327107&fm=27&gp=0.jpg"></image>
+                    </div>
+                    <div class="info"><text id="demo">陈键冲</text><text class="part">云平台</text></div>
+                </div>
+                <div class="all-part">
+                    <div>
+                        <image class="person-draw" src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3950028239,2497327107&fm=27&gp=0.jpg"></image>
+                    </div>
+                    <div class="info"><text id="demo">陈键冲</text><text class="part">云平台</text></div>
+                </div>
+
+            </div>
+            <div class="last">排名不分先后</div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+    var websocket = null;
+    var timer = null,
+        time = 0,
+        chooseList = '';
+
+    //判断当前浏览器是否支持WebSocket
+    if ('WebSocket' in window) {
+        // websocket = new WebSocket("ws://192.168.3.218:8111/annual-meeting/websocket/fullshre_2018_annual_meetting");
+        websocket = new WebSocket("ws://192.168.7.213:8111/annual-meeting/websocket/fullshre_2018_annual_meetting");
+    } else {
+        alert('Not support websocket')
+    }
+
+    //连接发生错误的回调方法
+    websocket.onerror = function() {
+        setMessageInnerHTML("error");
+    };
+
+    //连接成功建立的回调方法
+    websocket.onopen = function(event) {
+        setMessageInnerHTML("open");
+    }
+
+    //接收到消息的回调方法
+    websocket.onmessage = function(event) {
+        let data = typeof event.data == "string" ? JSON.parse(event.data) : event.data;
+        console.log(data);
+        if (data.data && data.data.status == 0) {
+            alert('活动正在进行中，您暂时不能参与');
+        }
+
+        timer && clearTimeout(timer);
+
+
+        //接收到题目
+        if (data.data && data.data.messageType == 101) {
+            time = 10;
+            chooseList = '';
+            $("#introduce").hide();
+            $("#answerBefore").show();
+            $("#answerAfter").hide();
+            $("#successList").hide();
+            window.leftAmount = data.data.totalAmount - data.data.leftAmount;
+            window.totalAmount = data.data.totalAmount;
+            $(".totalAmount").find("span").eq(0).text(data.data.totalAmount - data.data.leftAmount);
+            $(".totalAmount").find("span").eq(1).text(data.data.totalAmount);
+            $(".problem").text(data.data.questionName);
+            for (var i = 0; i < data.data.QuestionChoices.length; i++) {
+                chooseList += '<div class="choose"><text class="name">' + data.data.QuestionChoices[i].choiceName + '</text></div>';
+            }
+            $("#answerBefore").find(".choose_list").html(chooseList);
+            //开始倒计时
+            timer = setInterval(function() {
+                time--;
+                if (time < 0) {
+                    time = 0;
+                    //倒计时结束自动提交题目
+                    showMask = true;
+                    clearInterval(timer);
+                }
+                $("#answerBefore").find(".time").find("span").eq(0).text(time);
+            }, 1000);
+        }
+
+        //公布题目答案
+        if (data.messageType == 102) {
+            chooseList = '';
+            $("#answerBefore").hide();
+            $("#answerAfter").show();
+            $(".totalAmountA").find("span").eq(0).text(window.leftAmount);
+            $(".totalAmountA").find("span").eq(1).text(window.totalAmount);
+            for (var i = 0; i < data.answerChoices.length; i++) {
+                if (data.answerChoices[i].isAnswer) {
+                    chooseList += '<div class="choose active"><text class="name ">' + data.answerChoices[i].choiceName + '</text><text class="num">' + data.answerChoices[i].choiceAmount + '人</text></div>';
+                } else {
+                    chooseList += '<div class="choose"><text class="name ">' + data.answerChoices[i].choiceName + '</text><text class="num">' + data.answerChoices[i].choiceAmount + '人</text></div>';
+                }
+            }
+            $("#answerAfter").find(".choose_list").html(chooseList);
+        }
+
+        //公布胜出选手
+        if (data.data && data.data.messageType == 103) {
+            $("#answerBefore").hide();
+            $("#answerAfter").hide();
+            $("#successList").show();
+            var successStr = '';
+            if (data.data.winners.length == 0) {
+                successStr = '无人冲顶成功';
+            } else {
+                for (var i = 0; i < data.data.winners.length; i++) {
+                    successStr += '<div class="all-part"><div><image class="person-draw" src="' + data.data.winners[i].avatarUrl + '"></image></div><div class="info"><text id="demo">' + data.data.winners[i].realname + '</text><text class="part">' + data.data.winners[i].department + '</text></div></div>';
+                }
+            }
+            $("#successList").find('.name-contain').html(successStr);
+        }
+    }
+
+    //连接关闭的回调方法
+    websocket.onclose = function() {
+        console.log('socket close');
+    }
+
+    //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+    window.onbeforeunload = function() {
+        websocket.close();
+    }
+
+    //将消息显示在网页上
+    function setMessageInnerHTML(innerHTML) {
+        // document.getElementById('message').innerHTML += innerHTML + '<br/>';
+    }
+
+    //关闭连接
+    function closeWebSocket() {
+        websocket.close();
+    }
+
+    //发送消息
+    function send() {
+        var message = document.getElementById('text').value;
+        websocket.send(message);
+    }
+</script>
+<style>
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    
+    .page {
+        width: 1366px;
+        height: 768px;
+        background: url('./image/bg_big_two.png');
+        position: absolute;
+    }
+    
+    .get-top {
+        font-size: 95px;
+        text-align: center;
+        color: #FFFFFF;
+        margin-top: 230px;
+    }
+    
+    .pro-num {
+        margin-top: 5px;
+    }
+    
+    .last-rule {
+        font-size: 31px;
+        text-align: center;
+        color: #FFFFFF;
+        margin-top: 10px;
+    }
+    
+    .more-dis {
+        margin-top: 100px;
+    }
+    
+    .percent {
+        width: 110px;
+        height: 46px;
+        line-height: 46px;
+        margin-left: 628px;
+        margin-top: 77px;
+        text-align: center;
+        opacity: 0.8;
+        background: #FFFFFF;
+        border: 1px solid #979797;
+        border-radius: 40px;
+        font-size: 30px;
+        color: #000000;
+    }
+    
+    .time {
+        font-size: 28px;
+        color: #FFFFFF;
+        margin-top: 26px;
+        text-align: center;
+    }
+    
+    .choose {
+        border: 2px solid #00F2FF;
+        border-radius: 100px;
+        font-family: PingFangSC-Regular;
+        font-size: 40px;
+        color: #00F2FF;
+        width: 460px;
+        height: 88px;
+        line-height: 88px;
+        margin-left: 453px;
+        margin-top: 28px;
+        position: relative;
+    }
+    
+    .name {
+        margin-left: 35px;
+    }
+    
+    .choose:nth-child(1) {
+        margin-top: 53px;
+    }
+    
+    .problem {
+        font-family: PingFangSC-Semibold;
+        font-size: 50px;
+        color: #FFFFFF;
+        margin-top: 25px;
+        text-align: center;
+    }
+    
+    .more {
+        margin-top: 91px;
+    }
+    
+    .num {
+        position: absolute;
+        right: 35px;
+    }
+    
+    .active {
+        background: #00F2FF;
+        border: 2px solid #00F2FF;
+        border-radius: 100px;
+        font-size: 40px;
+        color: #011045;
+    }
+    
+    .result {
+        text-align: center;
+        font-family: PingFangSC-Semibold;
+        font-size: 60px;
+        color: #FFFFFF;
+        margin-top: 56px;
+    }
+    
+    .person-draw {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+    }
+    
+    .part {
+        margin-left: 20px;
+    }
+    
+    .info {
+        font-family: PingFangSC-Regular;
+        font-size: 30px;
+        color: #FFFFFF;
+        margin-left: 20px;
+        line-height: 50px;
+    }
+    
+    .all-part {
+        display: -webkit-box;
+        float: left;
+        margin-top: 40px;
+        margin-left: 50px;
+    }
+    
+    .name-contain {
+        margin: 10px 18px 88px 18px;
+    }
+    
+    .last {
+        position: absolute;
+        bottom: 40px;
+        font-family: PingFangSC-Regular;
+        font-size: 28px;
+        color: #FFFFFF;
+        margin-left: 599px;
+    }
+</style>
+
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>中奖名单</title>
+</head>
+<link href="css/main.css" rel="stylesheet"/>
+<script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+    var luckMembers;
+    $(document).ready(function () {
+
+        luckMembers = JSON.parse(localStorage.getItem("luckMembers"));
+
+        var group = $("div.item_group");
+        for (var i = 0; i < luckMembers.length; i++) {
+            var member = luckMembers[i];
+            var luckMember = $("<div class='luck_member'></div>");
+            var img = $("<img src='' class='luck_member_img'/>");
+            img.attr("src", member.avatarUrl).attr("id", member.memberId);
+            var name = $("<div></div>");
+            name.append(member.realname);
+            var department = $("<div></div>");
+            department.append(member.department);
+            luckMember.append(img).append(name).append(department);
+            luckMember.attr("index", i);
+            group.append(luckMember);
+        }
+
+        $(".luck_member").click(function (e) {
+            console.log(e);
+            var target = $(e.currentTarget);
+            // target.hide();
+            showMask(target.attr("index"));
+        });
+    });
+
+    function showMask(index) {
+        var mask = $(".mask");
+        var wrap = $(".center_wrap");
+        var info_img = $(".info_img");
+        var info_name = $(".info_name");
+        var info_department = $(".info_department");
+
+        var member = luckMembers[index];
+        info_img.attr("src", member.avatarUrl).attr("id", member.memberId);
+        info_name.empty().append(member.realname);
+        info_department.empty().append(member.department);
+
+        mask.show();
+        wrap.css("display", "flex");
+        wrap.click(function () {
+            mask.hide();
+            wrap.hide();
+        });
+    }
+</script>
+
+    <body class="bg2 contain1">
+        <form method="get" action="index.html">
+            <div class="title">中奖名单</div>
+            <div class="item_group" style="justify-content: center;">
+            </div>
+            <div class="fix_bottom">
+                <button class="btn" type="submit">返回上一页</button>
+            </div>
+        </form>
+
+        <div class="mask" style="display: none"></div>
+        <div class="center_wrap" style="display: none">
+            <div class="memberInfo">
+                <img class="info_img" src="http://img1.fshtop.com/meeting/陈健聪.jpg"/>
+                <div class="line"></div>
+                <div class="info_name">陈健聪</div>
+                <div class="info_department">云平台</div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,155 @@
+.bg1 {
+    background: url("../images/bg_big_one.png");
+    background-size: cover;
+}
+
+.contain1 {
+    padding: 64px 24px;
+    overflow: hidden;
+    margin: unset;
+}
+
+.bg2 {
+    background: url("../images/bg_big_two.png");
+    background-size: cover;
+}
+
+.input {
+    background: #FFFFFF;
+    border: 3px solid #000000;
+    border-radius: 8px;
+    text-align: center;
+    width: 220px;
+    height: 50px;
+    font-size: 28px;
+}
+
+.btn {
+    border: 1px solid #00F2FF;
+    margin-left: 24px;
+    border-radius: 8px;
+    font-size: 28px;
+    background: unset;
+    width: 160px;
+    height: 50px;
+    color: #00F2FF;
+}
+
+.item_group {
+    display: flex;
+    position: relative;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 26px;
+}
+
+.item {
+    width: 60px;
+    height: 60px;
+    margin: 3px;
+    background: #D8D8D8;
+    border: 1px solid #979797;
+    /* transition: all 0.3s;
+    transform: scale(0); */
+}
+
+.title {
+    font-size: 60px;
+    color: #FFFFFF;
+    width: 100%;
+    text-align: center;
+}
+
+.luck_member {
+    width: 380px;
+    margin: 7px;
+    padding: 10px 14px;
+    border: 1px solid #00F2FF;
+    border-radius: 6px;
+    font-size: 30px;
+    color: #FFFFFF;
+    display: flex;
+    /*Flex布局*/
+    display: -webkit-flex;
+    /* Safari */
+    align-items: center;
+    /*指定垂直居中*/
+}
+
+.luck_member_img {
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
+}
+
+.luck_member div {
+    margin-left: 20px;
+}
+
+.fix_bottom {
+    position: absolute;
+    display: flex;
+    bottom: 36px;
+    width: 100%;
+    margin-left: -48px;
+    justify-content: center;
+}
+
+.mask {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    opacity: 0.7;
+    top: 0;
+    left: 0;
+    background: #000;
+}
+
+.center_wrap {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    left: 0;
+    display: flex;
+}
+
+.memberInfo {
+    width: 400px;
+    height: 480px;
+    background: #FFFFFF;
+    border-radius: 6px;
+    text-align: center;
+}
+
+.info_img {
+    width: 200px;
+    height: 200px;
+    border-radius: 100px;
+    margin-top: 40px;
+    margin-bottom: 31px;
+}
+
+.info_name {
+    font-size: 60px;
+    margin-top: 23px;
+    color: #333333;
+    font-weight: bold;
+}
+
+.info_department {
+    font-size: 30px;
+    color: #333333;
+    margin-top: 6px;
+}
+
+.line {
+    background: #D8D8D8;
+    margin-left: 50px;
+    margin-right: 50px;
+    height: 2px;
+}

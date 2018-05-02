@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>丰盛榜2018年会</title>
+</head>
+<link href="css/main.css" rel="stylesheet" />
+<script  type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+    var members;
+    var host = "http://192.168.7.213:8111";
+
+    $(document).ready(function () {
+        loadAllMembers();
+
+        $("button#start").click(function () {
+            if (!members) {
+                return;
+            }
+            var input = $("input.input");
+            var value = +input.val();
+            if (isNaN(value) || value <= 0) {
+                alert("请输入正确的数字");
+                input.val("");
+            } else if (value > members.length) {
+                alert("抽奖人数不能大于总人数");
+                input.val("");
+            } else {
+                startRandom(value);
+            }
+        });
+
+        $("button#reset").click(function () {
+            resetMembers();
+        })
+    });
+
+    function loadAllMembers() {
+        var url = host + "/annual-meeting/lucky_draw/1.0.0/getAllLuckyJoinner";
+        $.get(url, function (data, status) {
+            if (status === "success") {
+                members = data.data;
+                var group = $("div.item_group");
+                group.empty();
+                var index = 0;
+                var oldItem;
+                // var codeTime = setInterval(function Internal(){
+                //     if (oldItem) {
+                //         setTimeout(function(){
+                //             oldItem.css({transform:'scale(1)'});
+                //         },200)
+                //     }
+                //     if (index >= members.length){
+                //         clearInterval(codeTime);
+                //         return;
+                //     }
+                //
+                //     var item = $("<img src='' class='item'/>");
+                //     var member = members[index];
+                //     item.attr("src", member.avatarUrl).attr("id", member.memberId);
+                //     group.append(item);
+                //     setTimeout(function(){
+                //         item.css({transform:'scale(1.5)'})
+                //     },50)
+                //     oldItem = item;
+                //     index++;
+                // },300);
+                var listStr = '';
+                for(var i=0;i<members.length;i++){
+                    var member = members[i];
+                    listStr+='<img src="'+member.avatarUrl+'" class="item"/>'
+                }
+                group.html(listStr);
+                var $imgs = group.find('img');
+                var rs = getRandomList(members.length, members.length - 1);
+                for(var i=0;i<rs.length;i++){
+                    (function(i){
+                        setTimeout(function(){
+                            $imgs.eq(i).css({transform:'scale(2)'})
+                            setTimeout(function(){
+                                $imgs.eq(i).css({transform:'scale(1)'})
+                            },300)
+                        },150*i)
+                    })(rs[i])
+                }
+                // for (var i = 0; i< members.length; i ++) {
+                //     var item = $("<img src='' class='item'/>");
+                //     var member = members[i];
+                //     item.attr("src", member.avatarUrl).attr("id", member.memberId);
+                //     group.append(item);
+                // }
+            } else {
+                alert("服务出错，请重试！");
+            }
+        })
+    }
+
+    function resetMembers() {
+        var url = host + "/annual-meeting/lucky_draw/1.0.0/reset";
+        $.get(url, function (data, status) {
+            if (status === "success") {
+                loadAllMembers();
+            } else {
+                alert("服务出错，请重试！");
+            }
+        })
+    }
+
+    function loadLuckMembers(count, callBack) {
+        var url = host + "/annual-meeting/lucky_draw/1.0.0/lucky_member";
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: '{"luckyMemberNum": ' + count + '}', // or JSON.stringify ({name: 'jonas'}),
+            contentType: "application/json",
+            dataType: 'json',
+            success: function (data) {
+                var luckMembers = data.data;
+                localStorage.setItem("luckMembers", JSON.stringify(luckMembers));
+                callBack(luckMembers);
+            }
+        });
+    }
+
+    function startRandom(count) {
+        var timeSec = 30;
+        var items = $(".item");
+        var luckMembers;
+        loadLuckMembers(count, function (data) {
+            luckMembers = data;
+        });
+        var codeTime = setInterval(function Internal(){
+            items.css("background", "#D8D8D8").css("opacity", 0.2);
+            if (timeSec <= 0){
+                var luckIndexs = mapLuckIndexs(luckMembers);
+                for (var i = 0; i < luckIndexs.length; i ++) {
+                    items.eq(luckIndexs[i]).css("background", "#ffffff").css("opacity", 1);
+                }
+                clearInterval(codeTime);
+                setTimeout(function () {
+                    window.location.href = "show_result.html";
+                }, 5000);
+                return;
+            }
+            var arr = getRandomList(items.length, count);
+            for (var i in arr) {
+                items.eq(arr[i]).css("background", "#ffffff").css("opacity", 1);
+            }
+
+            if (luckMembers) {
+                timeSec--;
+            }
+        },200);
+    }
+
+    function mapLuckIndexs(luckMembers) {
+        var indexs = [];
+        for (var i = 0; i < luckMembers.length; i ++) {
+            var luckMember = luckMembers[i];
+            for (var j = 0; j < members.length; j ++ ) {
+                if (luckMember.memberId === members[j].memberId) {
+                    indexs[i] = j;
+                    break
+                }
+            }
+        }
+        return indexs;
+    }
+
+    function getRandomList(items, count) {
+        var arr = [];
+        var i = 0;
+        while (count > i){
+            var random = Math.round(Math.random() * items);
+            if (!isInArray(arr, random)) {
+                arr[i] = random;
+                i ++;
+            }
+        }
+        return arr;
+    }
+
+    function isInArray(arr,value){
+        for(var i = 0; i < arr.length; i++){
+            if(value === arr[i]){
+                return true;
+            }
+        }
+        return false;
+    }
+
+</script>
+
+<body class="bg2 contain1">
+        <div>
+            <input class="input" type="text" placeholder="设置中奖人数"  />
+            <button class="btn" id="start">开始抽奖</button>
+            <button class="btn" style="right: 34px; position: absolute;" id="reset">重置</button>
+        </div>
+        <div class="item_group"></div>
+</body>
+</html>

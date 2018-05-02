@@ -1,0 +1,168 @@
+//良品列表
+.add-tap {
+  /*display:box;
+  display:-webkit-box;*/
+  margin-bottom: 0.2rem;
+  background: #fdfdfd;
+  border: 1px solid #eee;
+  padding: 0.1rem 0.1rem 0;
+  border-radius: 0.04rem; 
+  min-height: 0.64rem;
+  overflow: hidden;
+  .inner-block {
+    position: relative;
+    display:box;
+    display:-webkit-box;
+    width: 100%;
+    overflow: hidden;
+    padding-bottom:0.1rem;
+  }
+  .font {
+    padding-left: 0.1rem;
+    -webkit-box-flex: 1.0;
+    margin-right: 0.12rem;
+    &.single-line {
+      margin-right: 0;
+      -webkit-box-flex: 1.0;
+      p {
+        &:first-child {
+          overflow: hidden;
+          padding-top: 0.18rem;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+    }
+    p {
+      font-size: 0.12rem;
+      color: #4a4a4a;
+      line-height: 0.22rem;
+    }
+    p:last-child {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color:#4A4A4A;
+      font-size:0.12rem;
+      line-height:0.22rem;
+    }
+    p:first-child {
+      overflow: hidden;
+      color: #4a4a4a;
+      height: 0.44rem;
+      line-height:0.22rem;
+      font-size: 0.16rem;
+      font-weight: 700;
+      padding: 0; 
+      text-align: justify;
+    }
+  }
+  .pic {
+    width: 0.64rem;
+    height: 0.64rem;
+    background-size:cover;
+    background-position:center;
+  }
+  .add-btn {
+    width: 0.6rem;
+    height: 0.29rem;
+    padding-top:0.18rem;
+    a {
+      width: 0.6rem;
+      height: 0.29rem;
+      border: 0.01rem solid #F6A623;
+      color: #F6A623;
+      border-radius: 0.04rem;
+      font-size: 0.12rem;
+     display: box; 
+     display: -webkit-box; 
+     -webkit-box-pack:center; 
+     -webkit-box-align:center; 
+    }
+    a:active{
+      background:#F6A623;
+      color:#fff;
+    }
+  }
+}
+.add-tap.to-buy{
+    display:-webkit-box;
+}
+.add-tap.two-tit{
+    display:-webkit-box;
+}
+.add-tap:active{
+    background:#f4f4f4;
+}
+
+.from-where{
+    display:block;
+    position:relative;
+    border-top:0.01rem solid #DBDBDB;
+    .form-child-item{
+        font-size: 0.12rem;
+        color: #9B9B9B;
+        line-height:.14rem;
+        padding:0.1rem 0;
+        padding-right:0.08rem;
+        overflow: hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+        span{
+            opacity:0;
+        }
+        &:nth-child(n+2){
+            border-top:0.01rem solid #DBDBDB;
+            display:none;
+        }
+        &:active{
+            color:#666;
+        }
+    }
+    .form-child-item:first-child span{
+        opacity:1;
+    }
+    i.arrow,i.arrow:after{
+      border-left: 0.08rem solid transparent;
+      border-right: 0.08rem solid transparent;
+      display: block;
+      height: 0;
+      position: absolute;
+      top:0.13rem;
+      width: 0;
+      right:0.05rem;
+      border-top: 0.08rem solid #666;
+    }
+    i.arrow:after{
+        content: '';
+        display:block;
+        right:-0.08rem;
+        top:-0.09rem;
+        border-top: 0.08rem solid #fdfdfd;
+    }
+    i.arrow.up{
+        transform: rotate(180deg);
+    }
+}
+
+.component-child-list {
+  display:-webkit-box;
+  position: relative;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scolling: touch;
+  clear: both;
+  margin-top: 0.1rem;
+  padding-top: 0.1rem;
+  border-top: 0.015rem solid #DFDFDF;
+  .inner-block {
+    
+  }
+  .component-child-item {
+    width: 0.5rem;
+    height: 0.5rem;
+    background: #DDD;
+    margin-right: 0.2rem;
+    background-size: cover !important;
+  }
+}

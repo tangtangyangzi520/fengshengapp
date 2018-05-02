@@ -1,0 +1,21 @@
+.setChecked(@c:#FFFFFF) {
+    display: inline-block;
+    content: '';
+    width: /@px2rem;
+    height: /@px2rem;
+    border-bottom: /@px2rem solid @c;
+    border-right: /@px2rem solid @c;
+    transform: translate(0, 0) rotate(45deg);
+}
+
+.setCheckedAbs(@c:#FFFFFF) {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    content: '';
+    width: /@px2rem;
+    height: /@px2rem;
+    border-bottom: /@px2rem solid @c;
+    border-right: /@px2rem solid @c;
+    transform: translate(-50%, -65%) rotate(45deg);
+}

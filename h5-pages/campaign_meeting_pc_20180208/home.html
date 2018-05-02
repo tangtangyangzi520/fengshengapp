@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>2018年会</title>
+    <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+</head>
+
+<body>
+    <div class="page" id="page">
+    </div>
+</body>
+<script type="text/javascript">
+    window.onload = function() {
+        $("#page").click(function() {
+            window.location.href = 'index.html';
+        })
+    }
+</script>
+<style>
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    
+    .page {
+        width: 1366px;
+        height: 768px;
+        background: url('./image/bg_big_one.png');
+        position: absolute;
+        overflow: hidden;
+    }
+</style>
+
+</html>

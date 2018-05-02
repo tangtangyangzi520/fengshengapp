@@ -1,0 +1,114 @@
+@import "../../base/fn";
+.weui_search_bar {
+    position: relative;
+    padding: 8/@px2rem 10/@px2rem;
+    display: flex;
+    box-sizing: border-box;
+    background-color: #EFEFF4;
+    &:before {
+        .setTopLine();
+    }
+    &:after {
+        .setBottomLine();
+    }
+    &.weui_search_focusing{
+        .weui_search_cancel{
+            display: block;
+        }
+        .weui_search_text{
+            display: none;
+        }
+    }
+}
+.weui_search_outer {
+    position: relative;
+    flex: auto;
+    background-color: #EFEFF4;
+    &:after{
+        content: '';
+        position: absolute;
+        left: 0;
+        top:0;
+        width: 200%;
+        height: 200%;
+        transform: scale(.5);
+        transform-origin: 0 0;
+        border-radius: 10/@px2rem;
+        border: 1/@px2rem solid #E6E6EA;
+        box-sizing: border-box;
+        background: #FFFFFF;
+    }
+}
+.weui_search_inner {
+    position: relative;
+    padding-left: 30/@px2rem;
+    padding-right: 30/@px2rem;
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    z-index: 1;
+    .weui_search_input {
+        padding: 4/@px2rem 0;
+        width: 100%;
+        height: 20/14em;
+        border: 0;
+        font-size: 14/@px2rem;
+        line-height: 20/14em;
+        box-sizing: content-box;
+        background: transparent;
+        &:focus {
+            outline: none;
+        }
+    }
+    .weui_icon_search {
+        position: absolute;
+        left: 10/@px2rem;
+        top: -2/@px2rem;
+        line-height: 28/@px2rem;
+    }
+    .weui_icon_clear {
+        position: absolute;
+        top: -2/@px2rem;
+        right: 0;
+        padding: 0 10/@px2rem;
+        line-height: 28/@px2rem;
+    }
+}
+.weui_search_text {
+    position: absolute;
+    top: 1/@px2rem;
+    right: 1/@px2rem;
+    bottom: 1/@px2rem;
+    left: 1/@px2rem;
+    z-index: 2;
+    border-radius: 3/@px2rem;
+    text-align: center;
+    color: #9B9B9B;
+    background: #FFFFFF;
+    span {
+        display: inline-block;
+        font-size: 14/@px2rem;
+        vertical-align: middle;
+    }
+    .weui_icon_search {
+        margin-right: 5/@px2rem;
+    }
+}
+.weui_search_cancel {
+    display: none;
+    margin-left: 10/@px2rem;
+    line-height: 28/@px2rem;
+    white-space: nowrap;
+    color: #09BB07;
+}
+.weui_search_input:not(:valid) ~ .weui_icon_clear {
+    display: none;
+}
+
+//干掉input[search]默认的clear button
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+    display: none;
+}

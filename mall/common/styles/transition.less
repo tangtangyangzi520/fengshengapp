@@ -1,0 +1,68 @@
+// 从右侧滑入
+.slide-right-enter-active,
+.slide-right-leave-active {
+    transition: all .3s ease;
+}
+
+.slide-right-enter {
+    transform: translateX(100%);
+}
+
+.slide-right-leave-to {
+    transform: translateX(-100%);
+}
+// 从底部滑入
+.slide-bottom-enter-active,
+.slide-bottom-leave-active {
+    transition: all .3s ease;
+    transform: translateY(100%);
+}
+
+.slide-bottom-enter {
+    transform: translateY(60%);
+}
+
+.slide-bottom-leave-to {
+    transform: translateY(60%);
+}
+// 从右侧滑动淡入
+.slide-fade-enter-active {
+    transition: all .3s ease;
+}
+
+.slide-fade-leave-active {
+    transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+
+.slide-fade-enter,
+.slide-fade-leave-to {
+    transform: translateX(0.1rem);
+    opacity: 0;
+}
+
+// 淡入
+.fade-in-enter-active {
+    transition: all .3s ease;
+}
+.fade-in-leave-active {
+    transition: all 0s ease;
+}
+.fade-in-enter {
+    transition: all .3s ease;
+    opacity: 0;
+}
+.fade-in-leave-to {
+    transition: all 0s ease;
+    opacity: 0;
+}
+// 淡入-快速
+.fade-in-fast-enter-active,
+.fade-in-fast-leave-active {
+    transition: all .3s ease;
+}
+
+.fade-in-fast-enter,
+.fade-in-fast-leave-to {
+    // transition: all .3s ease;
+    opacity: 0;
+}

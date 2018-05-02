@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>2018年会</title>
+    <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+</head>
+
+<body>
+    <div class="page">
+        <div class="top-tit">2018丰盛榜年会节目评选</div>
+        <div class="top-word">请给你喜爱的节目，投出神圣的一票</div>
+        <div class="content">
+            <div class="again-left" id="programOne">
+
+            </div>
+            <div class="again-left" id="programTwo">
+
+            </div>
+        </div>
+        <div class="last-contain">
+            <div class="last-vote">开始投票</div>
+            <div class="last-vote">结束投票</div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+    window.onload = function() {
+        getList();
+    }
+
+    function getList() {
+        $.ajax({
+            url: 'http://192.168.7.213:8111/annual-meeting/vote/1.0.0/result', // 跳转到 action    
+            data: {
+
+            },
+            type: 'get',
+            cache: false,
+            dataType: 'json',
+            success: function(data) {
+                if (data.code == 200) {
+                    var lastResult = "";
+                    var lastResultTwo = "";
+                    data.data.sortnum = ["一", '二', '三', '四', '五', '六', '七', '八', '九'];
+                    for (var i = 0; i < data.data.length; i++) {
+                        if (i < 5) {
+                            lastResult += '<div class="part-contain " id="voteid' + data.data[i].voteId + '"><div>节目' + data.data.sortnum[i] + '</div><div class="program">' + data.data[i].programName + '</div><div class="last-num"><span class="num">' + data.data[i].pollNum + '</span>票</div></div>'
+                        } else {
+                            lastResultTwo += '<div class="part-contain" id="voteid' + data.data[i].voteId + '"><div>节目' + data.data.sortnum[i] + '</div><div class="program">' + data.data[i].programName + '</div><div class="last-num"><span class="num">' + data.data[i].pollNum + '</span>票</div></div>'
+                        }
+                    }
+                    $("#programOne").html(lastResult);
+                    $("#programTwo").html(lastResultTwo);
+
+                } else {
+
+                }
+            },
+            error: function() {
+                alert("异常！");
+            }
+        });
+    }
+    var timer = "";
+
+    function getInfo(options) {
+        $.ajax({
+            url: 'http://192.168.7.213:8111/annual-meeting/vote/1.0.0/operate', // 跳转到 action    
+            data: JSON.stringify(options),
+            type: 'post',
+            cache: false,
+            contentType: 'application/json;charset=UTF-8',
+            success: function(data) {
+                if (data.code == 200) {
+                    if (options.status == 0) {
+                        timer = setInterval(function() {
+                            getList();
+                        }, 1000);
+                    } else {
+                        clearInterval(timer);
+
+                    }
+                } else {
+
+                }
+            },
+            error: function() {
+                alert("异常！");
+            }
+        });
+    }
+    var change = 0
+    $('.last-vote:nth-child(1)').click(function() {
+        if (change == 0) {
+            var options = {
+                "status": 0
+            };
+            change = 1;
+            getInfo(options);
+            $('.last-vote:nth-child(1)').addClass('vote-grey')
+        }
+    });
+
+    $('.last-vote:nth-child(2)').click(function() {
+        if (change == 1) {
+            $('.last-vote:nth-child(2)').addClass('vote-grey')
+            var options = {
+                "status": 1
+            };
+            getInfo(options);
+            lastResult = "";
+            $.ajax({
+                url: 'http://192.168.7.213:8111/annual-meeting/vote/1.0.0/result', // 跳转到 action    
+                data: {
+
+                },
+                type: 'get',
+                cache: false,
+                dataType: 'json',
+                success: function(data) {
+                    if (data.code == 200) {
+                        var lastPoll = []
+                        var copydata = data.data.concat();
+                        var alldata = data.data;
+                        var compare = function(obj1, obj2) {
+                            var val1 = obj1.pollNum;
+                            var val2 = obj2.pollNum;
+                            if (val1 < val2) {
+                                return -1;
+                            } else if (val1 > val2) {
+                                return 1;
+                            } else {
+                                return 0;
+                            }
+                        }
+                        var reversedata = alldata.sort(compare).reverse();
+
+                        var lastResult = "";
+                        var lastResultTwo = "";
+                        var oneObtain = '';
+                        var twoObtain = '';
+                        var threeObtain = '';
+                        copydata.sortnum = ["一", '二', '三', '四', '五', '六', '七', '八', '九'];
+                        for (var i = 0; i < copydata.length; i++) {
+                            if (i < 5) {
+                                lastResult += '<div class="part-contain "  id="voteid' + copydata[i].voteId + '"><div>节目' + copydata.sortnum[i] + '</div><div class="program">' + copydata[i].programName + '</div><div class="last-num"><span class="num">' + copydata[i].pollNum + '</span>票</div></div>'
+                            }
+                            if (i >= 5) {
+                                lastResultTwo += '<div class="part-contain " id="voteid' + copydata[i].voteId + '"><div>节目' + copydata.sortnum[i] + '</div><div class="program">' + copydata[i].programName + '</div><div class="last-num"><span class="num">' + copydata[i].pollNum + '</span>票</div></div>'
+                            }
+                            oneObtain = reversedata[0].voteId;
+                            twoObtain = reversedata[1].voteId;
+                            threeObtain = reversedata[2].voteId;
+                        }
+                        $("#programOne").html(lastResult);
+                        $("#programTwo").html(lastResultTwo);
+                        $('#voteid' + oneObtain).addClass('draw').addClass('last-border');
+                        $('#voteid' + twoObtain).addClass('drawtwo').addClass('last-border');
+                        $('#voteid' + threeObtain).addClass('drawthree').addClass('last-border');
+                        $(".top-word").text("结果出炉！");
+                    } else {
+
+                    }
+                },
+                error: function() {
+                    alert("异常！");
+                }
+            });
+        }
+
+
+    });
+</script>
+<style>
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    
+    .page {
+        width: 1366px;
+        height: 768px;
+        background: url('./image/bg_big_two.png');
+        position: absolute;
+    }
+    
+    .top-tit {
+        font-size: 60px;
+        color: #FFFFFF;
+        margin-top: 56px;
+        text-align: center;
+    }
+    
+    .top-word {
+        font-size: 28px;
+        color: #FFFFFF;
+        text-align: center;
+        margin-top: 9px;
+    }
+    
+    .content {
+        margin: 46px 68px;
+    }
+    
+    .part-contain {
+        width: 550px;
+        display: -webkit-box;
+        padding: 10px 15px 10px 30px;
+        font-size: 30px;
+        color: #FFFFFF;
+        position: relative;
+        box-sizing: border-box;
+        text-align: center;
+        margin-top: 8px;
+        margin-left: 30px;
+    }
+    
+    .again-left {
+        float: left;
+    }
+    
+    .again-left:nth-child(2) {
+        margin-left: 40px;
+    }
+    
+    .program {
+        margin-left: 20px;
+    }
+    
+    .last-num {
+        position: absolute;
+        right: 15px;
+    }
+    
+    .num {
+        font-size: 30px;
+        color: #D8524C;
+        margin-right: 10px;
+    }
+    
+    .last-vote {
+        width: 185px;
+        height: 46px;
+        border: 1px solid #00F2FF;
+        border-radius: 6px;
+        font-size: 28px;
+        color: #00F2FF;
+        text-align: center;
+        line-height: 46px;
+    }
+    
+    .vote-grey {
+        color: rgb(230, 224, 224);
+    }
+    
+    .last-vote:nth-child(2) {
+        margin-left: 56px;
+    }
+    
+    .last-contain {
+        display: -webkit-box;
+        clear: both;
+        padding: 71px 470px 36px 470px;
+    }
+    
+    .draw::before {
+        width: 60px;
+        height: 70px;
+        background: url('./image/ic_champion.png');
+        position: absolute;
+        z-index: 66;
+        left: -40px;
+        top: -10px;
+        content: '';
+    }
+    
+    .drawtwo::before {
+        width: 60px;
+        height: 70px;
+        background: url('./image/ic_second.png');
+        position: absolute;
+        z-index: 66;
+        left: -40px;
+        top: -10px;
+        content: '';
+    }
+    
+    .drawthree::before {
+        width: 60px;
+        height: 70px;
+        background: url('./image/ic_thrid.png');
+        position: absolute;
+        z-index: 66;
+        left: -40px;
+        top: -10px;
+        content: '';
+    }
+    
+    .last-border {
+        border: 1px solid #00F2FF;
+        border-radius: 6px;
+    }
+    
+    .border-two {
+        left: 710px;
+        margin-top: 20px;
+    }
+    
+    .border-three {
+        left: 715px;
+        margin-top: 100px;
+    }
+</style>
+
+</html>

@@ -1,0 +1,40 @@
+// 从右侧滑入
+.slide-right-enter-active,
+.slide-right-leave-active {
+    transition: all .3s ease;
+}
+
+.slide-right-enter {
+    transform: translateX(100%);
+}
+
+.slide-right-leave-to {
+    transform: translateX(-100%);
+}
+
+// 从右侧滑动淡入
+.slide-fade-enter-active {
+    transition: all .3s ease;
+}
+
+.slide-fade-leave-active {
+    transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+
+.slide-fade-enter,
+.slide-fade-leave-to {
+    transform: translateX(0.1rem);
+    opacity: 0;
+}
+
+// 淡入
+.fade-in-enter-active,
+.fade-in-leave-active {
+    transition: all .3s ease;
+}
+
+.fade-in-enter,
+.fade-in-leave-to {
+    transition: all .3s ease;
+    opacity: 0;
+}
